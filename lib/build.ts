@@ -3,7 +3,7 @@ import type { Item } from "./parse";
 export const priceTypes = ["normal", "member1", "member2", "member3", "ecom_price"] as const;
 
 export type PriceRow = { code: string; description: string; type: string; price: number; rounded: boolean };
-export type QRow = { code: string; description: string; minQty: number; note: string };
+export type QRow = { code: string; description: string; minQty: string; note: string };
 
 // Round to 2 decimals only when the sheet has more than 2.
 export function roundIfNeeded(n: number): number {
@@ -40,14 +40,14 @@ export function buildRows(items: Item[], hasUom: boolean) {
         (b) => b.code !== it.code && b.code.slice(0, 8) === group && (b.uom ?? 1) > 1,
       );
       if (bundles.length) {
-        const tiers = [
-          { minQty: 1, note: "single" },
-          ...bundles.map((b) => ({ minQty: b.uom as number, note: `bundle ${b.code}` })),
-        ];
-        for (const t of tiers) {
-          qRows.push({ code: it.code, description: it.description, ...t });
-          csv.push(`${it.code},qprice,,`);
-        }
+        // one Q price row per item; the bundle size(s) are only a hint for keying in Min Qty
+        qRows.push({
+          code: it.code,
+          description: it.description,
+          minQty: bundles.map((b) => b.uom).join(" / "),
+          note: bundles.map((b) => `bundle ${b.code}`).join(", "),
+        });
+        csv.push(`${it.code},qprice,,`);
       }
     }
   }

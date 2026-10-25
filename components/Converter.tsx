@@ -369,16 +369,16 @@ export default function Converter() {
             {tab === "qprice" && (
               <div>
                 <p className="py-3 text-sm text-slate-600">
-                  These rows go into the CSV with the price empty. After you
-                  upload, key in the Min Qty and price on the form. Suggested
-                  Min Qty is from the bundle size.
+                  One Q price row per item goes into the CSV with the price
+                  empty. After you upload, key in the Min Qty and price on the
+                  form. The bundle size is only a hint.
                 </p>
                 <table className="w-full text-left text-sm">
                   <thead className="bg-brand-soft text-xs uppercase text-brand-dark">
                     <tr>
                       <th className="px-3 py-2">ARMS Code</th>
                       <th className="px-3 py-2">Description</th>
-                      <th className="px-3 py-2">Suggested Min Qty</th>
+                      <th className="px-3 py-2">Bundle size (Min Qty hint)</th>
                       <th className="px-3 py-2">Why</th>
                     </tr>
                   </thead>
