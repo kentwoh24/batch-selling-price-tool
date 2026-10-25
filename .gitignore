@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# never commit real company data (price lists, exports, PDFs)
+*.xlsx
+*.xls
+*.csv
+*.pdf
+!public/SAMPLE price list.xlsx
+data source/
+!.env.example
