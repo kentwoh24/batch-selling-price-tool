@@ -254,7 +254,6 @@ export async function parseWorkbook(buffer: ArrayBuffer): Promise<ParsedFile> {
       const uom = b.uomCol ? num(row.getCell(b.uomCol).value) : null;
       items.push({ code, description, uom, price });
     }
-    if (!b.uomCol) warnings.push("No UOM column found, so no Q price rows were made.");
     return { items, skipped, warnings, hasUom: !!b.uomCol };
   };
 

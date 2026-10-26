@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { parseWorkbook, type Block, type ParsedFile } from "@/lib/parse";
 import { buildRows, fmt, toDisplay } from "@/lib/build";
 
-type Tab = "prices" | "qprice" | "csv";
+type Tab = "prices" | "csv";
 
 export default function Converter() {
   const router = useRouter();
@@ -61,7 +61,7 @@ export default function Converter() {
   const result = useMemo(() => {
     if (!parsed || !block) return null;
     const ex = parsed.extract(block.id);
-    return { ...ex, ...buildRows(ex.items, ex.hasUom) };
+    return { ...ex, ...buildRows(ex.items) };
   }, [parsed, block]);
 
   const allDates = useMemo(
@@ -288,7 +288,6 @@ export default function Converter() {
             <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
               <Tile label="Items found" value={result.items.length} />
               <Tile label="Price rows" value={result.priceRows.length} />
-              <Tile label="Q price rows (price empty)" value={result.qRows.length} />
               <Tile
                 label="Need attention"
                 value={result.skipped.length}
@@ -326,9 +325,6 @@ export default function Converter() {
               <TabBtn active={tab === "prices"} onClick={() => setTab("prices")}>
                 Prices ({result.priceRows.length})
               </TabBtn>
-              <TabBtn active={tab === "qprice"} onClick={() => setTab("qprice")}>
-                Q price to key in ({result.qRows.length})
-              </TabBtn>
               <TabBtn active={tab === "csv"} onClick={() => setTab("csv")}>
                 CSV preview
               </TabBtn>
@@ -359,36 +355,6 @@ export default function Converter() {
                             </span>
                           )}
                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {tab === "qprice" && (
-              <div>
-                <p className="py-3 text-sm text-slate-600">
-                  One Q price row per item goes into the CSV with the price
-                  empty. After you upload, key in the Min Qty and price on the
-                  form. The bundle size is only a hint.
-                </p>
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-brand-soft text-xs uppercase text-brand-dark">
-                    <tr>
-                      <th className="px-3 py-2">ARMS Code</th>
-                      <th className="px-3 py-2">Description</th>
-                      <th className="px-3 py-2">Bundle size (Min Qty hint)</th>
-                      <th className="px-3 py-2">Why</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.qRows.map((r, i) => (
-                      <tr key={i} className="border-t border-slate-100">
-                        <td className="px-3 py-1.5 font-mono">{r.code}</td>
-                        <td className="px-3 py-1.5">{r.description}</td>
-                        <td className="px-3 py-1.5">{r.minQty}</td>
-                        <td className="px-3 py-1.5 text-slate-500">{r.note}</td>
                       </tr>
                     ))}
                   </tbody>
